@@ -5,6 +5,7 @@ interface Env {
   TURNSTILE_SECRET_KEY: string;
   S3_BUCKET: string;
   S3_ENDPOINT: string;
+  S3_REGION: string;
   DOWNLOAD_URL_PREFIX: string;
 }
 
@@ -40,16 +41,17 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
   const s3client = new S3({
     endpoint: context.env.S3_ENDPOINT,
+    region: context.env.S3_REGION,
     credentials: fromEnv(),
   });
   const date = outcome.challenge_ts.split("T")[0];
-  const filename = context.request.headers.get("x-filename");
-  const objectName = date + "/" + filename;
+  const file = body.get("file");
+  const objectName = date + "/" + file.name;
   console.log(`Upload file to ${objectName}`);
   const uploadResult = await s3client.putObject({
     Bucket: context.env.S3_BUCKET,
     Key: objectName,
-    Body: body.get("file"),
+    Body: file,
   });
   console.log(uploadResult);
   const downloadUrl = context.env.DOWNLOAD_URL_PREFIX + objectName;
