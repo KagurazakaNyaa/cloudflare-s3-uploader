@@ -44,6 +44,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     region: context.env.S3_REGION,
     credentials: fromEnv(),
   });
+  console.log(
+    `use s3 endpoint ${context.env.S3_ENDPOINT} with region ${context.env.S3_REGION}`
+  );
   const date = outcome.challenge_ts.split("T")[0];
   const file: File = body.get("file");
   const objectName = "/" + date + "/" + file.name;
