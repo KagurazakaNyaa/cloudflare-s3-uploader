@@ -1,5 +1,5 @@
 import { S3 } from "@aws-sdk/client-s3";
-import { fromEnv } from "@aws-sdk/credential-providers";
+import { fromEnv } from "@aws-sdk/credential-provider-env";
 
 interface Env {
   TURNSTILE_SECRET_KEY: string;
