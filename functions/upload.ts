@@ -51,7 +51,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const uploadResult = await s3client.putObject({
     Bucket: context.env.S3_BUCKET,
     Key: objectName,
-    Body: file,
+    Body: file.bits,
   });
   console.log(uploadResult);
   const downloadUrl = context.env.DOWNLOAD_URL_PREFIX + objectName;
