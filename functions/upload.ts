@@ -17,6 +17,7 @@ class TurnstileResponse {
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const SECRET_KEY = context.env.TURNSTILE_SECRET_KEY;
   const body = await context.request.formData();
+  console.log(body);
   // Turnstile injects a token in "cf-turnstile-response".
   const token = body.get("cf-turnstile-response");
   const ip = context.request.headers.get("CF-Connecting-IP");
@@ -45,13 +46,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const date = outcome.challenge_ts.split("T")[0];
   const file: File = body["file"];
   const objectName = date + "/" + file.name;
-  console.info(`Upload file to ${objectName}`);
+  console.log(`Upload file to ${objectName}`);
   const uploadResult = await s3client.putObject({
     Bucket: context.env.S3_BUCKET,
     Key: objectName,
     Body: file.stream(),
   });
-  console.info(uploadResult);
+  console.log(uploadResult);
   const downloadUrl = context.env.DOWNLOAD_URL_PREFIX + objectName;
   return new Response(downloadUrl);
 };
