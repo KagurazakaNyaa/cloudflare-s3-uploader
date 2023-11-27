@@ -56,7 +56,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   console.log(`use s3 endpoint ${S3_ENDPOINT} with region ${S3_REGION}`);
   const date = outcome.challenge_ts.split("T")[0];
   const file: File = body.get("file");
-  const objectName = "/" + date + "/" + file.name;
+  const objectName = date + "/" + file.name;
   console.log(`Upload file to ${objectName} length: ${file.size}`);
   const uploadResult = await s3client.putObject({
     Bucket: S3_BUCKET,
