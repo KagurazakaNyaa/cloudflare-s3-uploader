@@ -36,7 +36,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const outcome = await result.json<TurnstileResponse>();
   if (!outcome.success) {
-    return new Response("");
+    return new Response("CAPTHA not pass");
   }
   const s3client = new S3({
     endpoint: context.env.S3_ENDPOINT,
@@ -45,7 +45,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const date = outcome.challenge_ts.split("T")[0];
   const file: File = body["file"];
   const objectName = date + "/" + file.name;
-  s3client.putObject({
+  await s3client.putObject({
     Bucket: context.env.S3_BUCKET,
     Key: objectName,
     Body: file.stream(),
