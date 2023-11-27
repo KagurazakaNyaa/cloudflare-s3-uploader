@@ -46,12 +46,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   });
   const date = outcome.challenge_ts.split("T")[0];
   const file: File = body.get("file");
-  const objectName = date + "/" + file.name;
-  console.log(`Upload file to ${objectName}`);
+  const objectName = "/" + date + "/" + file.name;
+  console.log(`Upload file to ${objectName} length: ${file.size}`);
   const uploadResult = await s3client.putObject({
     Bucket: context.env.S3_BUCKET,
     Key: objectName,
     Body: await file.arrayBuffer(),
+    ContentType: file.type,
+    ContentLength: file.size,
   });
   console.log(uploadResult);
   const downloadUrl = context.env.DOWNLOAD_URL_PREFIX + objectName;
