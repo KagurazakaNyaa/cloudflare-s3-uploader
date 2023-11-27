@@ -1,11 +1,13 @@
 import { S3 } from "@aws-sdk/client-s3";
-import { fromEnv } from "@aws-sdk/credential-provider-env";
+import { AwsCredentialIdentity } from "@aws-sdk/types";
 
 interface Env {
   TURNSTILE_SECRET_KEY: string;
   S3_BUCKET: string;
   S3_ENDPOINT: string;
   S3_REGION: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
   DOWNLOAD_URL_PREFIX: string;
 }
 
@@ -39,20 +41,25 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (!outcome.success) {
     return new Response("CAPTHA not pass");
   }
+  const S3_BUCKET = context.env.S3_BUCKET;
+  const S3_ENDPOINT = context.env.S3_ENDPOINT;
+  const S3_REGION = context.env.S3_REGION;
+  const credential: AwsCredentialIdentity = {
+    accessKeyId: context.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: context.env.AWS_SECRET_ACCESS_KEY,
+  };
   const s3client = new S3({
-    endpoint: context.env.S3_ENDPOINT,
-    region: context.env.S3_REGION,
-    credentials: fromEnv(),
+    endpoint: S3_ENDPOINT,
+    region: S3_REGION,
+    credentials: credential,
   });
-  console.log(
-    `use s3 endpoint ${context.env.S3_ENDPOINT} with region ${context.env.S3_REGION}`
-  );
+  console.log(`use s3 endpoint ${S3_ENDPOINT} with region ${S3_REGION}`);
   const date = outcome.challenge_ts.split("T")[0];
   const file: File = body.get("file");
   const objectName = "/" + date + "/" + file.name;
   console.log(`Upload file to ${objectName} length: ${file.size}`);
   const uploadResult = await s3client.putObject({
-    Bucket: context.env.S3_BUCKET,
+    Bucket: S3_BUCKET,
     Key: objectName,
     Body: await file.arrayBuffer(),
     ContentType: file.type,

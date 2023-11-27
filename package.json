@@ -12,7 +12,6 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.458.0",
-    "@aws-sdk/credential-provider-env": "^3.451.0"
+    "@aws-sdk/client-s3": "^3.458.0"
   }
 }
