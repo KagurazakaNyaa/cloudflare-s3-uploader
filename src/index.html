@@ -1,0 +1,15 @@
+<script type="module" src="./index.js"></script>
+
+<style>
+    #file {
+        display: none;
+    }
+</style>
+
+<form action="/upload" method="POST">
+    <div class="cf-turnstile" data-sitekey="<TURNSTILE_SITE_KEY>"></div>
+    <label>
+        Select file<span class="material-symbols-outlined">attach_file</span><input type="file" id="file">
+    </label><br>
+    <md-filled-button type="submit" value="Submit">Upload</md-filled-button>
+</form>
